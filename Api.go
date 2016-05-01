@@ -42,7 +42,7 @@ func main() {
 		// v1.DELETE("/usuarios/:id", DeleteUser)
 	}
 
-	r.Run(":1337")
+	r.Run("")
 }
 
 // Consulta la base de datos y retorna toda la coleccion de clientes
