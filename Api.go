@@ -9,8 +9,8 @@ import (
 "strconv"
 )
 
-// Direccion de la app en Firebase (cambiar en produccion por la del profe)
-const APP_URL = "https://radiant-inferno-2748.firebaseio.com"
+// Direccion de la app en Firebase (definir variable de entorno en Heroku)
+const APP_URL = os.Getenv("APP_URL")
 
 // Estructura Producto
 type Producto struct {
