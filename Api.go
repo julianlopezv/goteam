@@ -10,7 +10,7 @@ import (
 )
 
 // Direccion de la app en Firebase (definir variable de entorno en Heroku)
-const APP_URL = os.Getenv("APP_URL")
+var APP_URL = os.Getenv("APP_URL")
 
 // Estructura Producto
 type Producto struct {
