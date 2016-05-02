@@ -9,6 +9,8 @@ import (
 "strconv"
 )
 
+// Direccion para correr la app localmente
+//var APP_URL = "radiant-inferno-2748.firebaseIO.com"
 // Direccion de la app en Firebase (definir variable de entorno en Heroku)
 var APP_URL = os.Getenv("APP_URL")
 
@@ -36,12 +38,14 @@ func main() {
 	v1 := r.Group("api/v1")
 	{
 		v1.GET("/clientes/:token", GetClientes)
-		v1.GET("/cliente/:documento/:token", GetCliente)
+		v1.GET("/cliente/:tipo_documento/:documento/:token", GetCliente)
 		// v1.POST("/usuarios", PostUser)
 		// v1.PUT("/usuarios/:id", UpdateUser)
 		// v1.DELETE("/usuarios/:id", DeleteUser)
 	}
 
+	/*para correr en un puerto local*/
+	//r.Run(":1337")
 	r.Run()
 }
 
@@ -68,6 +72,7 @@ func GetClientes(ginContext *gin.Context) {
 
 // Consulta un documento de cliente en la base de datos y si existe retorna su conjunto de datos
 func GetCliente(ginContext *gin.Context) {
+	tipoDocumento := ginContext.Params.ByName("tipo_documento")
 	numeroDocumento := ginContext.Params.ByName("documento")
 	numero, _ := strconv.ParseInt(numeroDocumento, 0, 64)
 	token := ginContext.Params.ByName("token")
@@ -78,7 +83,7 @@ func GetCliente(ginContext *gin.Context) {
 		collection := session.DB("my_bank_db").C("Clientes")
 
 		cliente := Cliente{}
-		err := collection.Find(bson.M{"NumeroDocumento": numero}).One(&cliente)
+		err := collection.Find(bson.M{"NumeroDocumento": numero,"tipoDocumento": tipoDocumento}).One(&cliente)
 		if err != nil {
 			ginContext.JSON(404, gin.H{
 				"auth":	"permiso concedido",
