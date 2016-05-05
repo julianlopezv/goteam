@@ -33,6 +33,25 @@ type Cliente struct {
 	Productos       []Producto `bson:"productos" json:"productos"`
 }
 
+// Estructura Ubicacion
+type Ubicacion struct {
+	Longitud float64 `bson:"longitud" json:"longitud"`
+	Latitud float64 `bson:"latitud" json:"latitud"`
+}
+
+// Estructura Ejecutivo
+type Ejecutivo struct {
+	Id              bson.ObjectId `bson:"_id" json:"_id"`
+	IdEjecutivo string    `bson:"id_ejecutivo" json:"id_ejecutivo"`
+	Nombre  string `bson:"nombre" json:"nombre"`
+	Foto  string `bson:"foto" json:"foto"`
+	TipoDocumento   string `bson:"tipo_doc" json:"tipo_doc"`
+	NumeroDocumento int `bson:"documento" json:"documento"`
+	Correo string `bson:"correo" json:"correo"`
+	Celular int `bson:"celular" json:"celular"`
+	Ubicacion Ubicacion `bson:"ubicacion" json:"ubicacion"`
+}
+
 // Define las rutas de la API y la ejecuta
 func main() {
 	r := gin.Default()
@@ -40,8 +59,9 @@ func main() {
 	v1 := r.Group("api/v1")
 	{
 		v1.GET("/clientes/:token", GetClientes)
-		v1.GET("/cliente/documento/:documento/:token", GetCliente)
-		v1.GET("/cliente/correo/:correo/:token", GetClientePorCorreo)
+		// v1.GET("/cliente/documento/:documento/:token", GetCliente)
+		v1.GET("/cliente/:correo/:token", GetClientePorCorreo)
+		v1.GET("/ejecutivo/:correo/:token", GetEjecutivoPorCorreoCliente)
 		// v1.POST("/usuarios", PostUser)
 		// v1.PUT("/usuarios/:id", UpdateUser)
 		// v1.DELETE("/usuarios/:id", DeleteUser)
@@ -121,6 +141,46 @@ func GetClientePorCorreo(ginContext *gin.Context) {
 				})
 		}else{
 			ginContext.JSON(200, cliente)
+		}
+
+	}else {
+		ginContext.JSON(404, gin.H{
+			"error":  "permiso denegado",
+			})
+	}
+}
+
+// Consulta el ejecutivo de un cliente
+func GetEjecutivoPorCorreoCliente(ginContext *gin.Context){
+	correo := ginContext.Params.ByName("correo")
+	token := ginContext.Params.ByName("token")
+	fmt.Println(correo)
+	if auth(token){
+		session := connect();
+		defer session.Close()
+		collection := session.DB("my_bank_db").C("Clientes")
+
+		cliente := Cliente{}
+		err := collection.Find(bson.M{"correo": correo}).One(&cliente)
+		if err != nil {
+			ginContext.JSON(404, gin.H{
+				"auth":	"permiso concedido",
+				"error":  "registro no encontrado",
+				})
+		}else{
+			session := connect();
+			defer session.Close()
+			ejecutivo := Ejecutivo{}
+			collection := session.DB("my_bank_db").C("Ejecutivos")
+			err := collection.Find(bson.M{"id_ejecutivo": cliente.EjecutivoEncargado}).One(&ejecutivo)
+			if err != nil {
+				ginContext.JSON(404, gin.H{
+					"auth":	"permiso concedido",
+					"error":  "registro no encontrado",
+					})
+			}else{
+				ginContext.JSON(200, ejecutivo)
+			}
 		}
 
 	}else {
