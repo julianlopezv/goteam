@@ -47,6 +47,8 @@ func main() {
 		// v1.DELETE("/usuarios/:id", DeleteUser)
 	}
 
+	/*para correr en un puerto local*/
+	//r.Run(":1337")
 	r.Run()
 }
 
@@ -73,6 +75,7 @@ func GetClientes(ginContext *gin.Context) {
 
 // Consulta un documento de cliente en la base de datos y si existe retorna su conjunto de datos
 func GetCliente(ginContext *gin.Context) {
+	tipoDocumento := ginContext.Params.ByName("tipo_documento")
 	numeroDocumento := ginContext.Params.ByName("documento")
 	numero, _ := strconv.ParseInt(numeroDocumento, 0, 64)
 	token := ginContext.Params.ByName("token")
@@ -83,7 +86,7 @@ func GetCliente(ginContext *gin.Context) {
 		collection := session.DB("my_bank_db").C("Clientes")
 
 		cliente := Cliente{}
-		err := collection.Find(bson.M{"NumeroDocumento": numero}).One(&cliente)
+		err := collection.Find(bson.M{"NumeroDocumento": numero,"tipoDocumento": tipoDocumento}).One(&cliente)
 		if err != nil {
 			ginContext.JSON(404, gin.H{
 				"auth":	"permiso concedido",
@@ -130,7 +133,7 @@ func GetClientePorCorreo(ginContext *gin.Context) {
 
 // Conecta a la base de datos
 // Definir variable de entorno en Heroku: Settings, Config Vars
-// Definir variable de entorno local: echo "export MONGO_URL=mongodb://goteam:goteam@ds019471.mlab.com:19471/my_bank_db" >> .bashrc
+// Definir variable de entorno local: echo "export MONGO_URL=mongodb://goteam:goteam@ds019471.mlab.com:19471/my_bank_db" >> ~/.bashrc
 func connect() (session *mgo.Session) {
 	connectURL := os.Getenv("MONGO_URL")
 	fmt.Println(connectURL)
