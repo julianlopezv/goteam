@@ -75,7 +75,6 @@ func GetClientes(ginContext *gin.Context) {
 
 // Consulta un documento de cliente en la base de datos y si existe retorna su conjunto de datos
 func GetCliente(ginContext *gin.Context) {
-	tipoDocumento := ginContext.Params.ByName("tipo_documento")
 	numeroDocumento := ginContext.Params.ByName("documento")
 	numero, _ := strconv.ParseInt(numeroDocumento, 0, 64)
 	token := ginContext.Params.ByName("token")
@@ -86,7 +85,7 @@ func GetCliente(ginContext *gin.Context) {
 		collection := session.DB("my_bank_db").C("Clientes")
 
 		cliente := Cliente{}
-		err := collection.Find(bson.M{"NumeroDocumento": numero,"tipoDocumento": tipoDocumento}).One(&cliente)
+		err := collection.Find(bson.M{"documento": numero}).One(&cliente)
 		if err != nil {
 			ginContext.JSON(404, gin.H{
 				"auth":	"permiso concedido",
