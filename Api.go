@@ -9,7 +9,7 @@ import (
 "strconv"
 "fmt"
 )
-
+//
 // Direccion de la app en Firebase
 // Definir variable de entorno en Heroku: Settings, Config Vars
 // Definir variable de entorno local: echo "export APP_URL=https://radiant-inferno-2748.firebaseio.com" >> ~/.bashrc
