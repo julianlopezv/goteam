@@ -58,6 +58,7 @@ func main() {
 
 	v1 := r.Group("api/v1")
 	{
+		v1.GET("/", HiImOk)
 		v1.GET("/clientes/:token", GetClientes)
 		// v1.GET("/cliente/documento/:documento/:token", GetCliente)
 		v1.GET("/cliente/:correo/:token", GetClientePorCorreo)
@@ -72,6 +73,9 @@ func main() {
 	r.Run()
 }
 
+func HiImOk(ginContext *gin.Context) {
+	ginContext.JSON(200, 'Hi Im OK!!!')
+}
 // Consulta la base de datos y retorna toda la coleccion de clientes
 func GetClientes(ginContext *gin.Context) {
 	session := connect();
