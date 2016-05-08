@@ -70,13 +70,30 @@ func main() {
 
 	/*para correr en un puerto local*/
 	//r.Run(":1337")
+	r.Use(CORS())
 	r.Run()
+}
+
+// Meotodo que permite responder peticiones que vengan desde otros dominios
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Content-Type", "application/json")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+        // c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
+		if c.Request.Method == "OPTIONS" {
+			fmt.Println("options")
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }
 
 func ImOk(ginContext *gin.Context) {
 	ginContext.JSON(200, gin.H{
-			"status":  "Im OK!!!",
-			})
+		"status":  "Im OK!!!",
+		})
 }
 // Consulta la base de datos y retorna toda la coleccion de clientes
 func GetClientes(ginContext *gin.Context) {
