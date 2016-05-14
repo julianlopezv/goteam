@@ -34,10 +34,6 @@
 			"Rev": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d"
 		},
 		{
-			"ImportPath": "github.com/tommy351/gin-cors",
-			"Rev": "dc91dec6313ae4db53481bf3b29cf6b94bf80357"
-		},
-		{
 			"ImportPath": "github.com/zabawaba99/firego",
 			"Comment": "v1-28-g8dec086",
 			"Rev": "8dec08658192ba0f3eb4e940e465b1ac56499010"

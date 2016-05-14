@@ -83,9 +83,6 @@ func main() {
 	r.Run()
 }
 
-// Meotodo que permite responder peticiones que vengan desde otros dominios
-
-
 func ImOk(ginContext *gin.Context) {
 	ginContext.JSON(200, gin.H{
 		"status":  "Im OK!!!",
