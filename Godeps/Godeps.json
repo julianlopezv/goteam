@@ -2,9 +2,6 @@
 	"ImportPath": "github.com/mateo1235/external-api-test-heroku",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
