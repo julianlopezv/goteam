@@ -2,6 +2,9 @@
 	"ImportPath": "github.com/mateo1235/external-api-test-heroku",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
@@ -23,8 +26,16 @@
 			"Rev": "7cc19b78d562895b13596ddce7aafb59dd789318"
 		},
 		{
+			"ImportPath": "github.com/itsjamie/gin-cors",
+			"Rev": "97b4a9da79331dfa2b6d35f4cdd1e50f5148859c"
+		},
+		{
 			"ImportPath": "github.com/manucorporat/sse",
 			"Rev": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d"
+		},
+		{
+			"ImportPath": "github.com/tommy351/gin-cors",
+			"Rev": "dc91dec6313ae4db53481bf3b29cf6b94bf80357"
 		},
 		{
 			"ImportPath": "github.com/zabawaba99/firego",
@@ -33,7 +44,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "1aafd77e1e7f6849ad16a7bdeb65e3589a10b2bb"
+			"Rev": "30be488e9140ebb7fac3b2995ac5a4b4d5e715ed"
 		},
 		{
 			"ImportPath": "gopkg.in/go-playground/validator.v8",

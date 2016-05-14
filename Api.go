@@ -3,11 +3,13 @@ package main
 import (
 "github.com/zabawaba99/firego"
 "github.com/gin-gonic/gin"
+"github.com/itsjamie/gin-cors"
 "gopkg.in/mgo.v2"
 "gopkg.in/mgo.v2/bson"
 "os"
 "strconv"
 "fmt"
+"time"
 )
 //
 // Direccion de la app en Firebase
@@ -55,7 +57,15 @@ type Ejecutivo struct {
 // Define las rutas de la API y la ejecuta
 func main() {
 	r := gin.Default()
-
+	r.Use(cors.Middleware(cors.Config{
+		Origins:        "*",
+		Methods:        "GET, PUT, POST, DELETE",
+		RequestHeaders: "Origin, Authorization, Content-Type",
+		ExposedHeaders: "",
+		MaxAge: 50 * time.Second,
+		Credentials: true,
+		ValidateHeaders: false,
+		}))
 	v1 := r.Group("")
 	{
 		v1.GET("/", ImOk)
@@ -70,25 +80,11 @@ func main() {
 
 	/*para correr en un puerto local*/
 	//r.Run(":1337")
-	r.Use(CORS())
 	r.Run()
 }
 
 // Meotodo que permite responder peticiones que vengan desde otros dominios
-func CORS() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Content-Type", "application/json")
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-        // c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
-		if c.Request.Method == "OPTIONS" {
-			fmt.Println("options")
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
+
 
 func ImOk(ginContext *gin.Context) {
 	ginContext.JSON(200, gin.H{
