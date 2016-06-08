@@ -17,6 +17,15 @@ import (
 // Definir variable de entorno local: echo "export APP_URL=https://radiant-inferno-2748.firebaseio.com" >> ~/.bashrc
 var APP_URL = os.Getenv("APP_URL")
 
+type Mensaje struct{
+	Id              bson.ObjectId `bson:"_id,omitempty" json:"_id"`
+	De string `bson:"de" json:"de"`
+	Para   string `bson:"para" json:"para"`
+	Fecha  string `bson:"fecha" json:"fecha"`
+	Estado string `bson:"estado" json:"estado"`
+	Mensaje string `bson:"mensaje" json:"mensaje"`
+}
+
 // Estructura Producto
 type Producto struct {
 	Nombre string `bson:"nombre" json:"tipo"`
@@ -61,7 +70,7 @@ func main() {
 		Origins:        "*",
 		Methods:        "GET, PUT, POST, DELETE",
 		RequestHeaders: "Origin, Authorization, Content-Type",
-		ExposedHeaders: "",
+		ExposedHeaders: "*",
 		MaxAge: 50 * time.Second,
 		Credentials: true,
 		ValidateHeaders: false,
@@ -73,6 +82,8 @@ func main() {
 		// v1.GET("/cliente/documento/:documento/:token", GetCliente)
 		v1.GET("/cliente/:correo/:token", GetClientePorCorreo)
 		v1.GET("/ejecutivo/:correo/:token", GetEjecutivoPorCorreoCliente)
+		v1.GET("/mensajes/:correo/:token", GetMensajesNuevosPorCorreoCliente)
+		v1.GET("/mensaje/:de/:para/:mensaje/:token", SetNuevoMensaje)
 		// v1.POST("/usuarios", PostUser)
 		// v1.PUT("/usuarios/:id", UpdateUser)
 		// v1.DELETE("/usuarios/:id", DeleteUser)
@@ -88,6 +99,73 @@ func ImOk(ginContext *gin.Context) {
 		"status":  "Im OK!!!",
 		})
 }
+
+// Consulta la base de datos y retorna toda la coleccion de clientes
+func GetMensajesNuevos(ginContext *gin.Context) {
+	session := connect();
+	defer session.Close()
+	collection := session.DB("my_bank_db").C("MesnajesGo")
+	token := ginContext.Params.ByName("token")
+
+	if auth(token){
+		mensajes := []Mensaje{}
+		err := collection.Find(nil).All(&mensajes)
+		if err != nil {
+			panic(err)
+		}
+		ginContext.JSON(200, mensajes)
+	}else{
+		ginContext.JSON(404, gin.H{
+			"error":  "permiso denegado",
+			})
+	}
+}
+
+func GetMensajesNuevosPorCorreoCliente(ginContext *gin.Context) {
+	session := connect();
+	defer session.Close()
+	collection := session.DB("my_bank_db").C("MensajesGo")
+	token := ginContext.Params.ByName("token")
+	correo := ginContext.Params.ByName("correo")
+
+	if auth(token){
+		mensajes := []Mensaje{}
+		err := collection.Find(bson.M{"para": correo, "estado":"nuevo"}).All(&mensajes)
+		if err != nil {
+			panic(err)
+		}
+		ginContext.JSON(200, mensajes)
+	}else{
+		ginContext.JSON(404, gin.H{
+			"error":  "permiso denegado",
+			})
+	}
+}
+
+func SetNuevoMensaje(ginContext *gin.Context) {
+	session := connect();
+	defer session.Close()
+	collection := session.DB("my_bank_db").C("MensajesGo")
+	token := ginContext.Params.ByName("token")
+	de := ginContext.Params.ByName("de")
+	para := ginContext.Params.ByName("para")
+	mensaje := ginContext.Params.ByName("mensaje")
+	estado := "nuevo"
+	fecha := "fecha"
+
+	if auth(token){
+		err := collection.Insert(&Mensaje{De: de, Para: para, Fecha: fecha, Estado: estado, Mensaje: mensaje})
+		if err != nil {
+			panic(err)
+		}
+		ginContext.JSON(200, "Mensaje guardado!!!")
+	}else{
+		ginContext.JSON(404, gin.H{
+			"error":  "permiso denegado",
+			})
+	}
+}
+
 // Consulta la base de datos y retorna toda la coleccion de clientes
 func GetClientes(ginContext *gin.Context) {
 	session := connect();
