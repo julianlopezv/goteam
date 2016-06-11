@@ -13,4 +13,4 @@ go test -v -cover
 ```
 
 
-![alt tag](goteam/Coverange.png)
+![alt tag]http://imgur.com/Xphle9c)
