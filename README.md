@@ -13,4 +13,4 @@ go test -v -cover
 ```
 
 
-![Alt text](http://imgur.com/Xphle9c, "Covertura")
+<img src="http://imgur.com/Xphle9c" alt="Covertura"/>
