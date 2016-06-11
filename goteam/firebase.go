@@ -2,14 +2,14 @@ package goteam
 
 import (
 "github.com/zabawaba99/firego"
-"os"
+//"os"
 )
 
 //
 // Direccion de la app en Firebase
 // Definir variable de entorno en Heroku: Settings, Config Vars
 // Definir variable de entorno local: echo "export APP_URL=https://radiant-inferno-2748.firebaseio.com" >> ~/.bashrc
-var APP_URL = os.Getenv("APP_URL")
+var APP_URL = "https://radiant-inferno-2748.firebaseio.com"//os.Getenv("APP_URL")
 
 // Autentica un token de Google en Firebase
 // Argumentos:

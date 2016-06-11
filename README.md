@@ -11,3 +11,6 @@ In order to run the tests you need `go get -t ./...` to go-get the test dependen
 cd goteam
 go test -v -cover
 ```
+
+
+![alt tag](https://github.com/julianlopezv/goteam/blob/master/Covertura.png)

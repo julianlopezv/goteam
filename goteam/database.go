@@ -4,8 +4,8 @@ import (
 "github.com/gin-gonic/gin"
 "gopkg.in/mgo.v2"
 "gopkg.in/mgo.v2/bson"
-"os"
-"fmt"
+//"os"
+//"fmt"
 )
 
 // Consulta todos los registros de la base de datos
@@ -16,6 +16,11 @@ func Select(token string, query interface{}, obj interface{}) (int, interface{})
 	if Auth(token){
 		
 		session := Connect();
+		
+		if session == nil {
+			return 404, bson.M{"error":  "permiso denegado"}
+		}
+		
 		defer session.Close()
 		collection := session.DB("my_bank_db").C("MensajesGo")
 		
@@ -36,6 +41,11 @@ func Select(token string, query interface{}, obj interface{}) (int, interface{})
 func SelectOne(token string, query interface{}, obj interface{}) (int, interface{}) {
 	if Auth(token){
 		session := Connect();
+		
+		if session == nil {
+			return 404, bson.M{"error":  "permiso denegado"}
+		}
+		
 		defer session.Close()
 		collection := session.DB("my_bank_db").C("MensajesGo")
 	
@@ -55,6 +65,9 @@ func SelectOne(token string, query interface{}, obj interface{}) (int, interface
 func Insert(token string, query interface{}) (int, interface{}) {
 	if Auth(token){
 		session := Connect();
+		if session == nil {
+			return 404, bson.M{"error":  "permiso denegado"}
+		}
 		defer session.Close()
 		collection := session.DB("my_bank_db").C("MensajesGo")
 	
@@ -70,12 +83,14 @@ func Insert(token string, query interface{}) (int, interface{}) {
 // Definir variable de entorno en Heroku: Settings, Config Vars
 // Definir variable de entorno local: echo "export MONGO_URL=mongodb://goteam:goteam@ds019471.mlab.com:19471/my_bank_db" >> ~/.bashrc
 func Connect() (session *mgo.Session) {
-	connectURL := os.Getenv("MONGO_URL")
+	connectURL := "MONGO_URL=mongodb://testing:testing@ds019471.mlab.com:19471/my_bank_db"//os.Getenv("MONGO_URL")
 	session, err := mgo.Dial(connectURL)
 	if err != nil {
-		fmt.Printf("Can't connect to mongo, go error %v\n", err)
-		os.Exit(1)
+		//fmt.Printf("Can't connect to mongo, go error %v\n", err)
+		//os.Exit(1)
+	} else {
+		session.SetSafe(&mgo.Safe{})
+		return session
 	}
-	session.SetSafe(&mgo.Safe{})
-	return session
+	return nil
 }
