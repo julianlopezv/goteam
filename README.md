@@ -13,4 +13,4 @@ go test -v -cover
 ```
 
 
-![alt tag](https://github.com/julianlopezv/goteam/blob/master/Covertura.png)
+![alt tag](goteam/Coverange.png)
